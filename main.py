@@ -41,7 +41,8 @@ def main():
     # Display results after submission
     if st.session_state.display_results:
         display_results(num_questions)
-
+#initializes the session state variables
+#it ensures that your app has a clean slate of variables
 def initialize_state():
     st.session_state.questions = []
     st.session_state.user_answers = {}
@@ -51,12 +52,17 @@ def initialize_state():
     st.session_state.quiz_submitted = False
     st.session_state.start_button = True
 
+# responsible for starting a new quiz based on the user's input for topic and number of questions
+# it populates the questions and user_answers states with generated questions and initializes answer placeholders
+# it sets quiz_started to True indicating that the quiz has begun
 def start_new_quiz(topic, num_questions, quiz_gen):
     st.session_state.questions = [quiz_gen.generate_question(topic) for _ in range(num_questions)]
     st.session_state.user_answers = {i: None for i in range(1, num_questions + 1)}
     st.session_state.correct_answers = [parse_question(q)[2] for q in st.session_state.questions]
     st.session_state.quiz_started = True
 
+#displays each question and its multiple-choice options
+#it uses streamlit's radio button for answer options and the disabled attribute is controlled by whether the quiz has been submitted
 def display_questions():
     if st.session_state.quiz_started:
         for i, q_text in enumerate(st.session_state.questions, start=1):
@@ -68,6 +74,8 @@ def display_questions():
             if chosen_option and not disabled:
                 st.session_state.user_answers[i] = chosen_option.split(')')[0]
 
+#calculates the user's score by comparing their answers with the correct ones.
+#it iterates over each question retrieves the users answer and compares it with the correct answer incrementing the score for each correct answer
 def mark_answers(num_questions):
     score = 0
     for i in range(1, num_questions + 1):
@@ -77,6 +85,8 @@ def mark_answers(num_questions):
         score += user_answer == correct_answer_key.upper()  # Ensure correct answer key is upper case
     return score
 
+#displays the final score and individual question feedback
+#it highlights correct answers in green and incorrect ones in red providing the correct answer for the latter
 def display_results(num_questions):
     st.write(f"Your score: {st.session_state.score}/{num_questions}")
     for i in range(1, num_questions + 1):
@@ -90,6 +100,8 @@ def display_results(num_questions):
         if not is_correct:
             st.write(f"Correct Answer: {correct_answer_key.upper()}")
 
+#checks if all questions in the quiz have been answered.
+#it is used to determine whether the "Submit Quiz" button should be enabled.
 def all_answered():
     return all(answer is not None for answer in st.session_state.user_answers.values())
 
