@@ -2,7 +2,7 @@
 import re
 
 def parse_question(question_text):
-    """Parse the given question text to extract the question, options, and correct answer."""
+    #parse the given question text to extract the question, options, and correct answer
     parts = question_text.split("Correct answer:")
     question_and_options = parts[0].strip()
     question, options_text = extract_question_and_options(question_and_options)
@@ -11,7 +11,7 @@ def parse_question(question_text):
     return question, options, correct_answer
 
 def extract_question_and_options(text):
-    """Extract the question and its options from the given text."""
+    #extract the question and its options from the given text
     if '\n' in text:
         split_text = text.split('\n', 1)
         return split_text[0].strip(), split_text[1].strip()
@@ -20,9 +20,9 @@ def extract_question_and_options(text):
         return split_text[0].strip(), split_text[1].strip() if len(split_text) > 1 else ''
 
 def extract_options(text):
-    """Extract the options from the given text and return them as a dictionary."""
+    #extract the options from the given text and return them as a dictionary
     options = {}
-    pattern = r'([A-Da-d])\)\s*(.*?)\s*(?=[A-Da-d]\)|$)'
+    pattern = r'([A-Da-d])\)\s*(.*?)\s*(?=[A-Da-d]\)|$)' #looks for patterns like A) Option Text
     for match in re.findall(pattern, text, re.DOTALL):
         options[match[0].upper()] = match[1].strip()
     return options
